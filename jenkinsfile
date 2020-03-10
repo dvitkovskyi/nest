@@ -3,7 +3,7 @@ properties([disableConcurrentBuilds()])
 
 pipeline {
     agent {
-            label 'dev'  //deploy on dev server
+            label 'dev'  
          }
     triggers {pollSCM('* * * * *')}
        options {
@@ -11,18 +11,18 @@ pipeline {
                timestamps()
        }
     stages {
-          /*    stage("checkout") {
+              stage("checkout") {
                        steps {
-                               echo "=========== Begin Update NPM version ==========="
+                               echo "=========== Begin Update NPM ==========="
                                sh 'sudo npm install -g npm@latest'
                                echo "=========== End Update NPM version ==========="
                        }
-               } */ 
+               }  
                stage("install-deps") {
                       steps {
-                               echo "=========== Begin Install dependencies ==========="
+                               echo "=========== Begin Install==========="
                                sh 'npm ci'
-                               echo "=========== End Install dependencies ==========="
+                               echo "=========== End Install==========="
                        }
                } 
 
@@ -33,7 +33,7 @@ pipeline {
                                echo "=========== End Build ==========="
                        }
                }         
-               stage("run-unit-tests") {
+               stage("run-tests") {
                       steps {
                                echo "=========== Begin Test ==========="
                                sh 'npm run test'
