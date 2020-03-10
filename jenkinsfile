@@ -1,0 +1,44 @@
+#!groovy
+properties([disableConcurrentBuilds()])
+
+pipeline {
+    agent {
+            label 'prod' 
+         }
+    triggers {pollSCM('* * * * *')}
+       options {
+               buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10')) 
+               timestamps()
+       }
+    stages {
+            stage("checkout") {
+                       steps {
+                               echo "=========== Begin Update NPM  ==========="
+                               sh 'sudo npm install -g npm@latest'
+                               echo "=========== End Update NPM ==========="
+                       }
+               }  
+               stage("install") {
+                      steps {
+                               echo "=========== Begin Install ==========="
+                               sh 'npm ci'
+                               echo "=========== End Install ==========="
+                       }
+               } 
+
+               stage("build") {
+                      steps {
+                               echo "=========== Begin Build ==========="
+                               sh 'npm run build'
+                               echo "=========== End Build ==========="
+                       }
+               }         
+               stage("run-tests") {
+                      steps {
+                               echo "=========== Begin Test ==========="
+                               sh 'npm run test'
+                               echo "=========== End Test ==========="
+                       }
+               }        
+      } 
+ }
